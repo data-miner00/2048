@@ -53,7 +53,7 @@ clang-format -i main.c
 - Language: C (see `CMakeLists.txt` for standard; add `-Wall -Wextra` when
   suggesting compiler flags, since warnings catch real bugs beginners hit
   often — uninitialized values, sign comparisons, etc).
-- 2-space indentation (matches existing `main.c`).
+- 4-space indentation (matches existing `main.c`).
 - Board is a fixed 4x4 grid of `int` (0 = empty cell, otherwise the tile
   value: 2, 4, 8, ... 2048).
 
@@ -77,5 +77,9 @@ Rough milestone order — don't skip ahead:
 8. Track and display score.
 9. Polish: clear screen between renders, game loop, replay/quit prompt.
 
-Current status: step 1 not yet done — `main.c` currently just fills the
-board with random 0/1 values and prints it (placeholder/scratch code).
+Current status: steps 1-3 done. Board starts empty with one random
+2/4 tile spawned into an empty cell, and renders with aligned columns
+(`.` for empty cells). `getInput()` reads a w/a/s/d + Enter move,
+correctly flushes each line (see `docs/stdin-input-pitfalls.md` for two
+input-handling bugs hit and fixed along the way), and exits cleanly on
+EOF. Next up: step 4, slide+merge logic for one direction.
