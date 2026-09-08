@@ -9,6 +9,7 @@ void initBoard(int board[WIDTH][HEIGHT]);
 void printBoard(int board[WIDTH][HEIGHT]);
 void gameLoop(int board[WIDTH][HEIGHT]);
 int getInput();
+void moveLeft(int row[WIDTH]);
 
 enum Direction {
     UP,
@@ -66,6 +67,12 @@ void gameLoop(int board[WIDTH][HEIGHT]) {
         input = getInput();
 
         printf("Input: %d\n", input);
+
+        if (input == LEFT) {
+            for (int i = 0; i < HEIGHT; i++) {
+                moveLeft(board[i]);
+            }
+        }
     }
 }
 
@@ -94,3 +101,40 @@ int getInput() {
     }
 }
 
+int getNonZeroIndex(int currentIndex, int row[WIDTH]) {
+    // Find first non-zero index
+    for (int i = currentIndex + 1; i < WIDTH; i++) {
+        if (row[i] != 0) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+void moveLeft(int row[WIDTH]) {
+    // Compact to left
+    for (int i = 0; i < WIDTH - 1; i++) {
+        int nonZeroIndex = getNonZeroIndex(i, row);
+        if (row[i] == 0 && nonZeroIndex != -1) {
+            row[i] = row[nonZeroIndex];
+            row[nonZeroIndex] = 0;
+        }
+    }
+
+    // Add same tile
+    for (int i = 0; i < WIDTH - 1; i++) {
+        if (row[i] != 0 && row[i] == row[i + 1]) {
+            row[i] *= 2;
+            row[i + 1] = 0;
+        }
+    }
+
+    // Compact to left
+    for (int i = 0; i < WIDTH - 1; i++) {
+        int nonZeroIndex = getNonZeroIndex(i, row);
+        if (row[i] == 0 && nonZeroIndex != -1) {
+            row[i] = row[nonZeroIndex];
+            row[nonZeroIndex] = 0;
+        }
+    }
+}
