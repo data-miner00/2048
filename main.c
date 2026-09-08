@@ -15,6 +15,10 @@ void mergeLeft(int row[WIDTH]);
 void moveLeft(int row[WIDTH]);
 void reverseRow(int row[WIDTH]);
 void moveRight(int row[WIDTH]);
+void getColumn(int board[WIDTH][HEIGHT], int column, int buffer[WIDTH]);
+void setColumn(int board[WIDTH][HEIGHT], int column, int buffer[WIDTH]);
+void moveUp(int board[WIDTH][HEIGHT]);
+void moveDown(int board[WIDTH][HEIGHT]);
 
 enum Direction {
     UP,
@@ -82,6 +86,12 @@ void gameLoop(int board[WIDTH][HEIGHT]) {
             for (int i = 0; i < HEIGHT; i++) {
                 moveRight(board[i]);
             }
+        }
+        else if (input == UP) {
+            moveUp(board);
+        }
+        else if (input == DOWN) {
+            moveDown(board);
         }
     }
 }
@@ -160,4 +170,34 @@ void moveRight(int row[WIDTH]) {
     reverseRow(row);
     moveLeft(row);
     reverseRow(row);
+}
+
+void getColumn(int board[WIDTH][HEIGHT], int column, int buffer[WIDTH]) {
+    for (int i = 0; i < HEIGHT; i++) {
+        buffer[i] = board[i][column];
+    }
+}
+
+void setColumn(int board[WIDTH][HEIGHT], int column, int buffer[WIDTH]) {
+    for (int i = 0; i < HEIGHT; i++) {
+        board[i][column] = buffer[i];
+    }
+}
+
+void moveUp(int board[WIDTH][HEIGHT]) {
+    int buffer[WIDTH];
+    for (int i = 0; i < WIDTH; i++) {
+        getColumn(board, i, buffer);
+        moveLeft(buffer);
+        setColumn(board, i, buffer);
+    }
+}
+
+void moveDown(int board[WIDTH][HEIGHT]) {
+    int buffer[WIDTH];
+    for (int i = 0; i < WIDTH; i++) {
+        getColumn(board, i, buffer);
+        moveRight(buffer);
+        setColumn(board, i, buffer);
+    }
 }
