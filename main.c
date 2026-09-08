@@ -13,6 +13,8 @@ int getNonZeroIndex(int currentIndex, int row[WIDTH]);
 void compactLeft(int row[WIDTH]);
 void mergeLeft(int row[WIDTH]);
 void moveLeft(int row[WIDTH]);
+void reverseRow(int row[WIDTH]);
+void moveRight(int row[WIDTH]);
 
 enum Direction {
     UP,
@@ -74,6 +76,11 @@ void gameLoop(int board[WIDTH][HEIGHT]) {
         if (input == LEFT) {
             for (int i = 0; i < HEIGHT; i++) {
                 moveLeft(board[i]);
+            }
+        }
+        else if (input == RIGHT) {
+            for (int i = 0; i < HEIGHT; i++) {
+                moveRight(board[i]);
             }
         }
     }
@@ -139,4 +146,18 @@ void moveLeft(int row[WIDTH]) {
     compactLeft(row);
     mergeLeft(row);
     compactLeft(row);
+}
+
+void reverseRow(int row[WIDTH]) {
+    for (int i = 0; i < WIDTH / 2; i++) {
+        int temp = row[i];
+        row[i] = row[WIDTH - i - 1];
+        row[WIDTH - i - 1] = temp;
+    }
+}
+
+void moveRight(int row[WIDTH]) {
+    reverseRow(row);
+    moveLeft(row);
+    reverseRow(row);
 }
