@@ -9,6 +9,9 @@ void initBoard(int board[WIDTH][HEIGHT]);
 void printBoard(int board[WIDTH][HEIGHT]);
 void gameLoop(int board[WIDTH][HEIGHT]);
 int getInput();
+int getNonZeroIndex(int currentIndex, int row[WIDTH]);
+void compactLeft(int row[WIDTH]);
+void mergeLeft(int row[WIDTH]);
 void moveLeft(int row[WIDTH]);
 
 enum Direction {
@@ -111,7 +114,7 @@ int getNonZeroIndex(int currentIndex, int row[WIDTH]) {
     return -1;
 }
 
-void moveLeft(int row[WIDTH]) {
+void compactLeft(int row[WIDTH]) {
     // Compact to left
     for (int i = 0; i < WIDTH - 1; i++) {
         int nonZeroIndex = getNonZeroIndex(i, row);
@@ -120,21 +123,20 @@ void moveLeft(int row[WIDTH]) {
             row[nonZeroIndex] = 0;
         }
     }
+}
 
-    // Add same tile
+// Adding same tiles in a row to left
+void mergeLeft(int row[WIDTH]) {
     for (int i = 0; i < WIDTH - 1; i++) {
         if (row[i] != 0 && row[i] == row[i + 1]) {
             row[i] *= 2;
             row[i + 1] = 0;
         }
     }
+}
 
-    // Compact to left
-    for (int i = 0; i < WIDTH - 1; i++) {
-        int nonZeroIndex = getNonZeroIndex(i, row);
-        if (row[i] == 0 && nonZeroIndex != -1) {
-            row[i] = row[nonZeroIndex];
-            row[nonZeroIndex] = 0;
-        }
-    }
+void moveLeft(int row[WIDTH]) {
+    compactLeft(row);
+    mergeLeft(row);
+    compactLeft(row);
 }
