@@ -55,11 +55,11 @@ void spawnTile(int board[WIDTH][HEIGHT]) {
         int randomX = rand() % WIDTH;
         int randomY = rand() % HEIGHT;
 
-        if (board[randomX][randomY] != 0) {
+        if (board[randomY][randomX] != 0) {
             continue;
         }
 
-        board[randomX][randomY] = rand() % 100 < 90 ? 2 : 4;
+        board[randomY][randomX] = rand() % 100 < 90 ? 2 : 4;
         break;
     }
 }
