@@ -3,34 +3,33 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-#define WIDTH 4
-#define HEIGHT 4
+#define SIZE 4
 #define WIN_SCORE 2048
 
-void spawnTile(int board[WIDTH][HEIGHT]);
-void printBoard(int board[WIDTH][HEIGHT]);
-void gameLoop(int board[WIDTH][HEIGHT]);
+void spawnTile(int board[SIZE][SIZE]);
+void printBoard(int board[SIZE][SIZE]);
+void gameLoop(int board[SIZE][SIZE]);
 int getInput();
-int getNonZeroIndex(int currentIndex, int row[WIDTH]);
-void compactLeft(int row[WIDTH]);
-void mergeLeft(int row[WIDTH]);
-void moveLeft(int row[WIDTH]);
-void reverseRow(int row[WIDTH]);
-void moveRight(int row[WIDTH]);
-void getColumn(int board[WIDTH][HEIGHT], int column, int buffer[WIDTH]);
-void setColumn(int board[WIDTH][HEIGHT], int column, int buffer[WIDTH]);
-void moveUp(int board[WIDTH][HEIGHT]);
-void moveDown(int board[WIDTH][HEIGHT]);
-bool hasChanged(int oldBoard[WIDTH][HEIGHT], int newBoard[WIDTH][HEIGHT]);
-bool hasWon(int board[WIDTH][HEIGHT]);
-bool canMove(int board[WIDTH][HEIGHT]);
+int getNonZeroIndex(int currentIndex, int row[SIZE]);
+void compactLeft(int row[SIZE]);
+void mergeLeft(int row[SIZE]);
+void moveLeft(int row[SIZE]);
+void reverseRow(int row[SIZE]);
+void moveRight(int row[SIZE]);
+void getColumn(int board[SIZE][SIZE], int column, int buffer[SIZE]);
+void setColumn(int board[SIZE][SIZE], int column, int buffer[SIZE]);
+void moveUp(int board[SIZE][SIZE]);
+void moveDown(int board[SIZE][SIZE]);
+bool hasChanged(int oldBoard[SIZE][SIZE], int newBoard[SIZE][SIZE]);
+bool hasWon(int board[SIZE][SIZE]);
+bool canMove(int board[SIZE][SIZE]);
 
 enum Direction { UP, DOWN, LEFT, RIGHT };
 
 int main(int argc, char *argv[]) {
     srand(time(NULL));
 
-    int board[WIDTH][HEIGHT] = {0};
+    int board[SIZE][SIZE] = {0};
 
     spawnTile(board);
 
@@ -39,9 +38,9 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-bool hasChanged(int oldBoard[WIDTH][HEIGHT], int newBoard[WIDTH][HEIGHT]) {
-    for (int i = 0; i < WIDTH; i++) {
-        for (int j = 0; j < HEIGHT; j++) {
+bool hasChanged(int oldBoard[SIZE][SIZE], int newBoard[SIZE][SIZE]) {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
             if (oldBoard[i][j] != newBoard[i][j]) {
                 return true;
             }
@@ -50,10 +49,10 @@ bool hasChanged(int oldBoard[WIDTH][HEIGHT], int newBoard[WIDTH][HEIGHT]) {
     return false;
 }
 
-void spawnTile(int board[WIDTH][HEIGHT]) {
+void spawnTile(int board[SIZE][SIZE]) {
     while (true) {
-        int randomX = rand() % WIDTH;
-        int randomY = rand() % HEIGHT;
+        int randomX = rand() % SIZE;
+        int randomY = rand() % SIZE;
 
         if (board[randomY][randomX] != 0) {
             continue;
@@ -64,10 +63,10 @@ void spawnTile(int board[WIDTH][HEIGHT]) {
     }
 }
 
-void printBoard(int board[WIDTH][HEIGHT]) {
+void printBoard(int board[SIZE][SIZE]) {
     printf("Board:\n\n");
-    for (int i = 0; i < WIDTH; i++) {
-        for (int j = 0; j < HEIGHT; j++) {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
             if (board[i][j] == 0) {
                 printf("   . ");
             } else {
@@ -78,12 +77,12 @@ void printBoard(int board[WIDTH][HEIGHT]) {
     }
 }
 
-void gameLoop(int board[WIDTH][HEIGHT]) {
+void gameLoop(int board[SIZE][SIZE]) {
     int input;
-    int snapshot[WIDTH][HEIGHT];
+    int snapshot[SIZE][SIZE];
 
     while (true) {
-        memcpy(snapshot, board, sizeof(int) * WIDTH * HEIGHT); // Can also use sizeof(snapshot)
+        memcpy(snapshot, board, sizeof(int) * SIZE * SIZE); // Can also use sizeof(snapshot)
 
         printBoard(board);
 
@@ -100,11 +99,11 @@ void gameLoop(int board[WIDTH][HEIGHT]) {
         input = getInput();
 
         if (input == LEFT) {
-            for (int i = 0; i < HEIGHT; i++) {
+            for (int i = 0; i < SIZE; i++) {
                 moveLeft(board[i]);
             }
         } else if (input == RIGHT) {
-            for (int i = 0; i < HEIGHT; i++) {
+            for (int i = 0; i < SIZE; i++) {
                 moveRight(board[i]);
             }
         } else if (input == UP) {
@@ -145,9 +144,9 @@ int getInput() {
     }
 }
 
-int getNonZeroIndex(int currentIndex, int row[WIDTH]) {
+int getNonZeroIndex(int currentIndex, int row[SIZE]) {
     // Find first non-zero index
-    for (int i = currentIndex + 1; i < WIDTH; i++) {
+    for (int i = currentIndex + 1; i < SIZE; i++) {
         if (row[i] != 0) {
             return i;
         }
@@ -155,9 +154,9 @@ int getNonZeroIndex(int currentIndex, int row[WIDTH]) {
     return -1;
 }
 
-void compactLeft(int row[WIDTH]) {
+void compactLeft(int row[SIZE]) {
     // Compact to left
-    for (int i = 0; i < WIDTH - 1; i++) {
+    for (int i = 0; i < SIZE - 1; i++) {
         int nonZeroIndex = getNonZeroIndex(i, row);
         if (row[i] == 0 && nonZeroIndex != -1) {
             row[i] = row[nonZeroIndex];
@@ -167,8 +166,8 @@ void compactLeft(int row[WIDTH]) {
 }
 
 // Adding same tiles in a row to left
-void mergeLeft(int row[WIDTH]) {
-    for (int i = 0; i < WIDTH - 1; i++) {
+void mergeLeft(int row[SIZE]) {
+    for (int i = 0; i < SIZE - 1; i++) {
         if (row[i] != 0 && row[i] == row[i + 1]) {
             row[i] *= 2;
             row[i + 1] = 0;
@@ -176,59 +175,59 @@ void mergeLeft(int row[WIDTH]) {
     }
 }
 
-void moveLeft(int row[WIDTH]) {
+void moveLeft(int row[SIZE]) {
     compactLeft(row);
     mergeLeft(row);
     compactLeft(row);
 }
 
-void reverseRow(int row[WIDTH]) {
-    for (int i = 0; i < WIDTH / 2; i++) {
+void reverseRow(int row[SIZE]) {
+    for (int i = 0; i < SIZE / 2; i++) {
         int temp = row[i];
-        row[i] = row[WIDTH - i - 1];
-        row[WIDTH - i - 1] = temp;
+        row[i] = row[SIZE - i - 1];
+        row[SIZE - i - 1] = temp;
     }
 }
 
-void moveRight(int row[WIDTH]) {
+void moveRight(int row[SIZE]) {
     reverseRow(row);
     moveLeft(row);
     reverseRow(row);
 }
 
-void getColumn(int board[WIDTH][HEIGHT], int column, int buffer[WIDTH]) {
-    for (int i = 0; i < HEIGHT; i++) {
+void getColumn(int board[SIZE][SIZE], int column, int buffer[SIZE]) {
+    for (int i = 0; i < SIZE; i++) {
         buffer[i] = board[i][column];
     }
 }
 
-void setColumn(int board[WIDTH][HEIGHT], int column, int buffer[WIDTH]) {
-    for (int i = 0; i < HEIGHT; i++) {
+void setColumn(int board[SIZE][SIZE], int column, int buffer[SIZE]) {
+    for (int i = 0; i < SIZE; i++) {
         board[i][column] = buffer[i];
     }
 }
 
-void moveUp(int board[WIDTH][HEIGHT]) {
-    int buffer[WIDTH];
-    for (int i = 0; i < WIDTH; i++) {
+void moveUp(int board[SIZE][SIZE]) {
+    int buffer[SIZE];
+    for (int i = 0; i < SIZE; i++) {
         getColumn(board, i, buffer);
         moveLeft(buffer);
         setColumn(board, i, buffer);
     }
 }
 
-void moveDown(int board[WIDTH][HEIGHT]) {
-    int buffer[WIDTH];
-    for (int i = 0; i < WIDTH; i++) {
+void moveDown(int board[SIZE][SIZE]) {
+    int buffer[SIZE];
+    for (int i = 0; i < SIZE; i++) {
         getColumn(board, i, buffer);
         moveRight(buffer);
         setColumn(board, i, buffer);
     }
 }
 
-bool hasWon(int board[WIDTH][HEIGHT]) {
-    for (int i = 0; i < WIDTH; i++) {
-        for (int j = 0; j < HEIGHT; j++) {
+bool hasWon(int board[SIZE][SIZE]) {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
             if (board[i][j] == WIN_SCORE) {
                 return true;
             }
@@ -239,9 +238,9 @@ bool hasWon(int board[WIDTH][HEIGHT]) {
 
 // For optimization, can just compare one horizontal and one vertical neighbor, as eventually all
 // will be compared Commented out 2 perpendicular checks for now
-bool canMove(int board[WIDTH][HEIGHT]) {
-    for (int i = 0; i < WIDTH; i++) {
-        for (int j = 0; j < HEIGHT; j++) {
+bool canMove(int board[SIZE][SIZE]) {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
             if (board[i][j] == 0) {
                 return true;
             }
@@ -250,7 +249,7 @@ bool canMove(int board[WIDTH][HEIGHT]) {
                 return true;
             }
             // Check bottom
-            // if (i < WIDTH - 1 && board[i + 1][j] == board[i][j]) {
+            // if (i < SIZE - 1 && board[i + 1][j] == board[i][j]) {
             //     return true;
             // }
             // Check left
@@ -258,7 +257,7 @@ bool canMove(int board[WIDTH][HEIGHT]) {
                 return true;
             }
             // Check right
-            // if (j < HEIGHT - 1 && board[i][j + 1] == board[i][j]) {
+            // if (j < SIZE - 1 && board[i][j + 1] == board[i][j]) {
             //     return true;
             // }
         }
