@@ -5,6 +5,7 @@
 #include <string.h>
 #define WIDTH 4
 #define HEIGHT 4
+#define WIN_SCORE 2048
 
 void spawnTile(int board[WIDTH][HEIGHT]);
 void printBoard(int board[WIDTH][HEIGHT]);
@@ -21,6 +22,8 @@ void setColumn(int board[WIDTH][HEIGHT], int column, int buffer[WIDTH]);
 void moveUp(int board[WIDTH][HEIGHT]);
 void moveDown(int board[WIDTH][HEIGHT]);
 bool hasChanged(int oldBoard[WIDTH][HEIGHT], int newBoard[WIDTH][HEIGHT]);
+bool hasWon(int board[WIDTH][HEIGHT]);
+bool canMove(int board[WIDTH][HEIGHT]);
 
 enum Direction { UP, DOWN, LEFT, RIGHT };
 
@@ -102,6 +105,18 @@ void gameLoop(int board[WIDTH][HEIGHT]) {
 
         if (hasChanged(snapshot, board)) {
             spawnTile(board);
+        }
+
+        if (hasWon(board)) {
+            printBoard(board);
+            printf("You win!\n");
+            break;
+        }
+
+        if (!canMove(board)) {
+            printBoard(board);
+            printf("You lose!\n");
+            break;
         }
     }
 }
@@ -212,3 +227,42 @@ void moveDown(int board[WIDTH][HEIGHT]) {
         setColumn(board, i, buffer);
     }
 }
+
+bool hasWon(int board[WIDTH][HEIGHT]) {
+    for (int i = 0; i < WIDTH; i++) {
+        for (int j = 0; j < HEIGHT; j++) {
+            if (board[i][j] == WIN_SCORE) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool canMove(int board[WIDTH][HEIGHT]) {
+    for (int i = 0; i < WIDTH; i++) {
+        for (int j = 0; j < HEIGHT; j++) {
+            if (board[i][j] == 0) {
+                return true;
+            }
+            // Check left
+            if (i > 0 && board[i - 1][j] == board[i][j]) {
+                return true;
+            }
+            // Check right
+            if (i < WIDTH - 1 && board[i + 1][j] == board[i][j]) {
+                return true;
+            }
+            // Check top
+            if (j > 0 && board[i][j - 1] == board[i][j]) {
+                return true;
+            }
+            // Check bottom
+            if (j < HEIGHT - 1 && board[i][j + 1] == board[i][j]) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
