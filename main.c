@@ -239,28 +239,30 @@ bool hasWon(int board[WIDTH][HEIGHT]) {
     return false;
 }
 
+// For optimization, can just compare one horizontal and one vertical neighbor, as eventually all will be compared
+// Commented out 2 perpendicular checks for now
 bool canMove(int board[WIDTH][HEIGHT]) {
     for (int i = 0; i < WIDTH; i++) {
         for (int j = 0; j < HEIGHT; j++) {
             if (board[i][j] == 0) {
                 return true;
             }
-            // Check left
+            // Check top
             if (i > 0 && board[i - 1][j] == board[i][j]) {
                 return true;
             }
-            // Check right
-            if (i < WIDTH - 1 && board[i + 1][j] == board[i][j]) {
-                return true;
-            }
-            // Check top
+            // Check bottom
+            // if (i < WIDTH - 1 && board[i + 1][j] == board[i][j]) {
+            //     return true;
+            // }
+            // Check left
             if (j > 0 && board[i][j - 1] == board[i][j]) {
                 return true;
             }
-            // Check bottom
-            if (j < HEIGHT - 1 && board[i][j + 1] == board[i][j]) {
-                return true;
-            }
+            // Check right
+            // if (j < HEIGHT - 1 && board[i][j + 1] == board[i][j]) {
+            //     return true;
+            // }
         }
     }
     return false;
