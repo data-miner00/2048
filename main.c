@@ -2,10 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 #define WIDTH 4
 #define HEIGHT 4
 
-void initBoard(int board[WIDTH][HEIGHT]);
+void spawnTile(int board[WIDTH][HEIGHT]);
 void printBoard(int board[WIDTH][HEIGHT]);
 void gameLoop(int board[WIDTH][HEIGHT]);
 int getInput();
@@ -19,27 +20,34 @@ void getColumn(int board[WIDTH][HEIGHT], int column, int buffer[WIDTH]);
 void setColumn(int board[WIDTH][HEIGHT], int column, int buffer[WIDTH]);
 void moveUp(int board[WIDTH][HEIGHT]);
 void moveDown(int board[WIDTH][HEIGHT]);
+bool hasChanged(int oldBoard[WIDTH][HEIGHT], int newBoard[WIDTH][HEIGHT]);
 
-enum Direction {
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT
-};
+enum Direction { UP, DOWN, LEFT, RIGHT };
 
 int main(int argc, char *argv[]) {
     srand(time(NULL));
 
     int board[WIDTH][HEIGHT] = {0};
 
-    initBoard(board);
+    spawnTile(board);
 
     gameLoop(board);
 
     return 0;
 }
 
-void initBoard(int board[WIDTH][HEIGHT]) {
+bool hasChanged(int oldBoard[WIDTH][HEIGHT], int newBoard[WIDTH][HEIGHT]) {
+    for (int i = 0; i < WIDTH; i++) {
+        for (int j = 0; j < HEIGHT; j++) {
+            if (oldBoard[i][j] != newBoard[i][j]) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+void spawnTile(int board[WIDTH][HEIGHT]) {
     while (true) {
         int randomX = rand() % WIDTH;
         int randomY = rand() % HEIGHT;
@@ -69,29 +77,31 @@ void printBoard(int board[WIDTH][HEIGHT]) {
 
 void gameLoop(int board[WIDTH][HEIGHT]) {
     int input;
+    int snapshot[WIDTH][HEIGHT];
 
     while (true) {
+        memcpy(snapshot, board, sizeof(int) * WIDTH * HEIGHT); // Can also use sizeof(snapshot)
+
         printBoard(board);
 
         input = getInput();
-
-        printf("Input: %d\n", input);
 
         if (input == LEFT) {
             for (int i = 0; i < HEIGHT; i++) {
                 moveLeft(board[i]);
             }
-        }
-        else if (input == RIGHT) {
+        } else if (input == RIGHT) {
             for (int i = 0; i < HEIGHT; i++) {
                 moveRight(board[i]);
             }
-        }
-        else if (input == UP) {
+        } else if (input == UP) {
             moveUp(board);
-        }
-        else if (input == DOWN) {
+        } else if (input == DOWN) {
             moveDown(board);
+        }
+
+        if (hasChanged(snapshot, board)) {
+            spawnTile(board);
         }
     }
 }
@@ -101,7 +111,8 @@ int getInput() {
 
     while (true) {
         input = getchar();
-        while ((discard = getchar()) != '\n' && discard != EOF);
+        while ((discard = getchar()) != '\n' && discard != EOF)
+            ;
 
         if (input == EOF) {
             exit(0);
