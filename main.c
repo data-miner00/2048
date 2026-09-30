@@ -24,7 +24,7 @@ bool hasChanged(int oldBoard[SIZE][SIZE], int newBoard[SIZE][SIZE]);
 bool hasWon(int board[SIZE][SIZE]);
 bool canMove(int board[SIZE][SIZE]);
 
-enum Direction { UP, DOWN, LEFT, RIGHT };
+enum Command { UP, DOWN, LEFT, RIGHT, QUIT };
 
 int main(int argc, char *argv[]) {
     srand(time(NULL));
@@ -98,6 +98,10 @@ void gameLoop(int board[SIZE][SIZE]) {
 
         input = getInput();
 
+        if (input == QUIT) {
+            break;
+        }
+
         if (input == LEFT) {
             for (int i = 0; i < SIZE; i++) {
                 moveLeft(board[i]);
@@ -127,7 +131,7 @@ int getInput() {
             ;
 
         if (input == EOF) {
-            exit(0);
+            return QUIT;
         }
 
         if (input == 'w' || input == 'W') {
@@ -138,6 +142,8 @@ int getInput() {
             return LEFT;
         } else if (input == 'd' || input == 'D') {
             return RIGHT;
+        } else if (input == 'q' || input == 'Q') {
+            return QUIT;
         } else {
             printf("Invalid input\n");
         }
