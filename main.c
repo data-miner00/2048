@@ -127,11 +127,14 @@ int getInput() {
 
     while (true) {
         input = getchar();
-        while ((discard = getchar()) != '\n' && discard != EOF)
-            ;
 
         if (input == EOF) {
             return QUIT;
+        }
+
+        if (input != '\n') {
+            while ((discard = getchar()) != '\n' && discard != EOF)
+                ;
         }
 
         if (input == 'w' || input == 'W') {
