@@ -23,6 +23,7 @@ int moveDown(int board[SIZE][SIZE]);
 bool hasChanged(int oldBoard[SIZE][SIZE], int newBoard[SIZE][SIZE]);
 bool hasWon(int board[SIZE][SIZE]);
 bool canMove(int board[SIZE][SIZE]);
+void clearScreen(void);
 
 enum Command { UP, DOWN, LEFT, RIGHT, QUIT };
 
@@ -85,6 +86,7 @@ void gameLoop(int board[SIZE][SIZE]) {
     while (true) {
         memcpy(snapshot, board, sizeof(int) * SIZE * SIZE); // Can also use sizeof(snapshot)
 
+        clearScreen();
         printBoard(board, score);
 
         if (hasWon(board)) {
@@ -282,4 +284,10 @@ bool canMove(int board[SIZE][SIZE]) {
         }
     }
     return false;
+}
+
+void clearScreen(void) {
+    // ESC[2J = clear screen
+    // ESC[H = move cursor to top left
+    printf("\033[2J\033[H");
 }
