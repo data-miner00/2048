@@ -7,19 +7,19 @@
 #define WIN_SCORE 2048
 
 void spawnTile(int board[SIZE][SIZE]);
-void printBoard(int board[SIZE][SIZE]);
+void printBoard(int board[SIZE][SIZE], int score);
 void gameLoop(int board[SIZE][SIZE]);
 int getInput();
 int getNonZeroIndex(int currentIndex, int row[SIZE]);
 void compactLeft(int row[SIZE]);
-void mergeLeft(int row[SIZE]);
-void moveLeft(int row[SIZE]);
+int mergeLeft(int row[SIZE]);
+int moveLeft(int row[SIZE]);
 void reverseRow(int row[SIZE]);
-void moveRight(int row[SIZE]);
+int moveRight(int row[SIZE]);
 void getColumn(int board[SIZE][SIZE], int column, int buffer[SIZE]);
 void setColumn(int board[SIZE][SIZE], int column, int buffer[SIZE]);
-void moveUp(int board[SIZE][SIZE]);
-void moveDown(int board[SIZE][SIZE]);
+int moveUp(int board[SIZE][SIZE]);
+int moveDown(int board[SIZE][SIZE]);
 bool hasChanged(int oldBoard[SIZE][SIZE], int newBoard[SIZE][SIZE]);
 bool hasWon(int board[SIZE][SIZE]);
 bool canMove(int board[SIZE][SIZE]);
@@ -63,8 +63,8 @@ void spawnTile(int board[SIZE][SIZE]) {
     }
 }
 
-void printBoard(int board[SIZE][SIZE]) {
-    printf("Board:\n\n");
+void printBoard(int board[SIZE][SIZE], int score) {
+    printf("Score: %d\n\n", score);
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE; j++) {
             if (board[i][j] == 0) {
@@ -80,11 +80,12 @@ void printBoard(int board[SIZE][SIZE]) {
 void gameLoop(int board[SIZE][SIZE]) {
     int input;
     int snapshot[SIZE][SIZE];
+    int score = 0;
 
     while (true) {
         memcpy(snapshot, board, sizeof(int) * SIZE * SIZE); // Can also use sizeof(snapshot)
 
-        printBoard(board);
+        printBoard(board, score);
 
         if (hasWon(board)) {
             printf("You win!\n");
@@ -104,16 +105,16 @@ void gameLoop(int board[SIZE][SIZE]) {
 
         if (input == LEFT) {
             for (int i = 0; i < SIZE; i++) {
-                moveLeft(board[i]);
+                score += moveLeft(board[i]);
             }
         } else if (input == RIGHT) {
             for (int i = 0; i < SIZE; i++) {
-                moveRight(board[i]);
+                score += moveRight(board[i]);
             }
         } else if (input == UP) {
-            moveUp(board);
+            score += moveUp(board);
         } else if (input == DOWN) {
-            moveDown(board);
+            score += moveDown(board);
         }
 
         if (hasChanged(snapshot, board)) {
@@ -175,19 +176,23 @@ void compactLeft(int row[SIZE]) {
 }
 
 // Adding same tiles in a row to left
-void mergeLeft(int row[SIZE]) {
+int mergeLeft(int row[SIZE]) {
+    int currentScore = 0;
     for (int i = 0; i < SIZE - 1; i++) {
         if (row[i] != 0 && row[i] == row[i + 1]) {
             row[i] *= 2;
+            currentScore += row[i];
             row[i + 1] = 0;
         }
     }
+    return currentScore;
 }
 
-void moveLeft(int row[SIZE]) {
+int moveLeft(int row[SIZE]) {
     compactLeft(row);
-    mergeLeft(row);
+    int score = mergeLeft(row);
     compactLeft(row);
+    return score;
 }
 
 void reverseRow(int row[SIZE]) {
@@ -198,10 +203,11 @@ void reverseRow(int row[SIZE]) {
     }
 }
 
-void moveRight(int row[SIZE]) {
+int moveRight(int row[SIZE]) {
     reverseRow(row);
-    moveLeft(row);
+    int score = moveLeft(row);
     reverseRow(row);
+    return score;
 }
 
 void getColumn(int board[SIZE][SIZE], int column, int buffer[SIZE]) {
@@ -216,22 +222,26 @@ void setColumn(int board[SIZE][SIZE], int column, int buffer[SIZE]) {
     }
 }
 
-void moveUp(int board[SIZE][SIZE]) {
+int moveUp(int board[SIZE][SIZE]) {
+    int currentScore = 0;
     int buffer[SIZE];
     for (int i = 0; i < SIZE; i++) {
         getColumn(board, i, buffer);
-        moveLeft(buffer);
+        currentScore += moveLeft(buffer);
         setColumn(board, i, buffer);
     }
+    return currentScore;
 }
 
-void moveDown(int board[SIZE][SIZE]) {
+int moveDown(int board[SIZE][SIZE]) {
+    int currentScore = 0;
     int buffer[SIZE];
     for (int i = 0; i < SIZE; i++) {
         getColumn(board, i, buffer);
-        moveRight(buffer);
+        currentScore += moveRight(buffer);
         setColumn(board, i, buffer);
     }
+    return currentScore;
 }
 
 bool hasWon(int board[SIZE][SIZE]) {
