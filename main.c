@@ -6,9 +6,11 @@
 #define SIZE 4
 #define WIN_SCORE 2048
 
+enum GameState { WIN, LOSE, EXIT };
+
 void spawnTile(int board[SIZE][SIZE]);
 void printBoard(int board[SIZE][SIZE], int score);
-void gameLoop(int board[SIZE][SIZE]);
+enum GameState gameLoop(int board[SIZE][SIZE]);
 int getInput();
 int getNonZeroIndex(int currentIndex, int row[SIZE]);
 void compactLeft(int row[SIZE]);
@@ -24,17 +26,23 @@ bool hasChanged(int oldBoard[SIZE][SIZE], int newBoard[SIZE][SIZE]);
 bool hasWon(int board[SIZE][SIZE]);
 bool canMove(int board[SIZE][SIZE]);
 void clearScreen(void);
+bool askPlayAgain(void);
 
 enum Command { UP, DOWN, LEFT, RIGHT, QUIT };
 
 int main(int argc, char *argv[]) {
     srand(time(NULL));
 
-    int board[SIZE][SIZE] = {0};
 
-    spawnTile(board);
+    do {
+        int board[SIZE][SIZE] = {0};
 
-    gameLoop(board);
+        spawnTile(board);
+        enum GameState state = gameLoop(board);
+        if (state == EXIT) {
+            break;
+        }
+    } while (askPlayAgain());
 
     return 0;
 }
@@ -78,7 +86,7 @@ void printBoard(int board[SIZE][SIZE], int score) {
     }
 }
 
-void gameLoop(int board[SIZE][SIZE]) {
+enum GameState gameLoop(int board[SIZE][SIZE]) {
     int input;
     int snapshot[SIZE][SIZE];
     int score = 0;
@@ -91,18 +99,18 @@ void gameLoop(int board[SIZE][SIZE]) {
 
         if (hasWon(board)) {
             printf("You win!\n");
-            break;
+            return WIN;
         }
 
         if (!canMove(board)) {
             printf("You lose!\n");
-            break;
+            return LOSE;
         }
 
         input = getInput();
 
         if (input == QUIT) {
-            break;
+            return EXIT;
         }
 
         if (input == LEFT) {
@@ -290,4 +298,17 @@ void clearScreen(void) {
     // ESC[2J = clear screen
     // ESC[H = move cursor to top left
     printf("\033[2J\033[H");
+}
+
+bool askPlayAgain(void) {
+    printf("Play again? (y/n): ");
+    char answer = getchar();
+    
+    while (answer != 'y' && answer != 'Y' && answer != 'n' && answer != 'N') {
+        printf("Invalid input\n");
+        printf("Play again? (y/n): ");
+        answer = getchar();
+    }
+
+    return answer == 'y' || answer == 'Y';
 }
