@@ -27,12 +27,12 @@ bool hasWon(int board[SIZE][SIZE]);
 bool canMove(int board[SIZE][SIZE]);
 void clearScreen(void);
 bool askPlayAgain(void);
+int getRawInput(void);
 
 enum Command { UP, DOWN, LEFT, RIGHT, QUIT };
 
 int main(int argc, char *argv[]) {
     srand(time(NULL));
-
 
     do {
         int board[SIZE][SIZE] = {0};
@@ -131,6 +131,21 @@ enum GameState gameLoop(int board[SIZE][SIZE]) {
             spawnTile(board);
         }
     }
+}
+
+int getRawInput(void) {
+    int input = getchar(), discard;
+
+    if (input == EOF) {
+        return input;
+    }
+
+    if (input != '\n') {
+        while ((discard = getchar()) != '\n' && discard != EOF)
+            ;
+    }
+
+    return input;
 }
 
 int getInput() {
@@ -301,14 +316,22 @@ void clearScreen(void) {
 }
 
 bool askPlayAgain(void) {
-    printf("Play again? (y/n): ");
-    char answer = getchar();
-    
-    while (answer != 'y' && answer != 'Y' && answer != 'n' && answer != 'N') {
-        printf("Invalid input\n");
+    while (true) {
         printf("Play again? (y/n): ");
-        answer = getchar();
-    }
+        fflush(stdout); // Prompt has no '\n', so push it out before waiting for input
 
-    return answer == 'y' || answer == 'Y';
+        int answer = getRawInput();
+
+        if (answer == EOF) {
+            return false;
+        }
+
+        if (answer == 'y' || answer == 'Y') {
+            return true;
+        } else if (answer == 'n' || answer == 'N') {
+            return false;
+        } else {
+            printf("Invalid input\n");
+        }
+    }
 }
