@@ -50,12 +50,12 @@ clang-format -i main.c
 
 ## Conventions
 
-- Language: C (see `CMakeLists.txt` for standard; add `-Wall -Wextra` when
-  suggesting compiler flags, since warnings catch real bugs beginners hit
-  often — uninitialized values, sign comparisons, etc).
+- Language: C. `CMakeLists.txt` pins the standard (C17) and the warning
+  flags (`-Wall -Wextra -Wpedantic`).
 - 4-space indentation (matches existing `main.c`).
-- Board is a fixed 4x4 grid of `int` (0 = empty cell, otherwise the tile
-  value: 2, 4, 8, ... 2048).
+- Board is a fixed 4x4 grid of `int`, indexed `board[row][col]` with row
+  0 at the top (0 = empty cell, otherwise the tile value: 2, 4, 8, ...
+  2048).
 
 ## Learning roadmap (high level)
 
@@ -77,9 +77,11 @@ Rough milestone order — don't skip ahead:
 8. Track and display score.
 9. Polish: clear screen between renders, game loop, replay/quit prompt.
 
-Current status: steps 1-3 done. Board starts empty with one random
-2/4 tile spawned into an empty cell, and renders with aligned columns
-(`.` for empty cells). `getInput()` reads a w/a/s/d + Enter move,
-correctly flushes each line (see `docs/stdin-input-pitfalls.md` for two
-input-handling bugs hit and fixed along the way), and exits cleanly on
-EOF. Next up: step 4, slide+merge logic for one direction.
+Current status: all nine steps done. No next milestone picked yet — ask
+Shaun what he wants to work on next.
+
+- Before changing code that reads stdin, read
+  `docs/stdin-input-pitfalls.md`: the line-flush, EOF and blank-line bugs
+  already hit.
+- Before writing `board` indexing code, read
+  `docs/2d-array-mental-model.md`: why `[row][col]`, and the (x, y) trap.

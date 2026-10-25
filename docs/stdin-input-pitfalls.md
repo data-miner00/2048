@@ -1,9 +1,9 @@
-# Reading keyboard input with `getchar()`: two pitfalls
+# Reading keyboard input with `getchar()`: three pitfalls
 
 `getInput()` in `main.c` reads moves from stdin one character at a time
 with `getchar()`. This is the simplest way to read input in C, but it has
-two sharp edges that are easy to miss as a beginner. Both were hit (and
-fixed) while building this project — this doc explains what they were,
+three sharp edges that are easy to miss as a beginner. All three were hit
+(and fixed) while building this project — this doc explains what they were,
 why they happened, and how to reason about them if similar bugs show up
 elsewhere.
 
@@ -69,9 +69,10 @@ while ((discard = getchar()) != '\n' && discard != EOF);
 /* ...now check what `input` was... */
 ```
 
-This drains the rest of the line unconditionally, whether the line was
-one character or ten. Re-running the same repro afterwards, the `w` on
-the second line is correctly detected as a move.
+This drains the rest of the line, whether it held one character or ten.
+Re-running the same repro afterwards, the `w` on the second line is
+correctly detected as a move. Draining *unconditionally* turned out to be
+a bug of its own, though — see Pitfall 3.
 
 ## Pitfall 2: not checking for `EOF`, causing a busy-loop
 
@@ -123,13 +124,65 @@ if (input == EOF) {
 After this, `./2048 < /dev/null` exits cleanly (status `0`) instead of
 running forever.
 
+When the `q` key was added, `exit(0)` here became `return QUIT;`, so EOF
+ends the game the same way `q` does: `gameLoop` sees `QUIT` and `break`s
+out of its loop.
+
+## Pitfall 3: a blank line swallows the next line
+
+### The bug
+
+Pitfall 1's drain loop reads "up to and including the `'\n'`", which
+assumes the `'\n'` hasn't been read yet. On a blank line (the user just
+presses Enter) that's false: the first `getchar()` already returned the
+`'\n'` itself. The drain loop then keeps reading until the *next* `'\n'`,
+throwing away the whole next line.
+
+### Demonstrating it
+
+```sh
+printf '\nw\n' | ./2048 | grep -c 'Board:'
+```
+
+The board is printed once at the start and again after every move, so a
+working `w` gives `2`. Before the fix this printed `1`: the blank line was
+reported as invalid, and the `w` was drained along with it. Interactively,
+pressing Enter and then typing `q` printed "Invalid input" and kept
+waiting — the `q` line was the one being drained.
+
+### The fix
+
+Check for `EOF` first, right after the read that can produce it (a closed
+stream has no line left to drain), then drain only if `input` wasn't the
+`'\n'`:
+
+```c
+input = getchar();
+
+if (input == EOF) {
+    return QUIT;
+}
+
+if (input != '\n') {
+    while ((discard = getchar()) != '\n' && discard != EOF)
+        ;
+}
+```
+
+A blank line still prints "Invalid input", but the line after it is now
+read normally.
+
 ## Takeaway
 
 Any `while (true)` loop built around `getchar()` (or similar raw stdin
-reads) needs to answer two questions explicitly, not by accident:
+reads) needs to answer three questions explicitly, not by accident:
 1. **How much input does one "turn" actually consume?** Don't hardcode an
    assumption about line length — drain up to the delimiter instead.
 2. **What happens when the input source is gone, not just wrong?** `EOF`
    is a permanent, non-blocking condition, not a transient bad keystroke
    — it needs its own branch, checked before you decide the input was
    merely "invalid."
+3. **Has the delimiter already been read?** "Drain up to the next `'\n'`"
+   only works while the `'\n'` is still ahead. When the character you
+   just read *is* the `'\n'` (a blank line), there's nothing left to
+   drain — draining anyway eats the next line.

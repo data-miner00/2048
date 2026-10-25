@@ -42,23 +42,23 @@ x is horizontal, so it selects the column; y selects the row. A point
 first" is the most common mix-up. Some libraries use both orders, e.g.
 OpenCV's `mat.at<int>(row, col)` vs `cv::Point(x, y)`.
 
-## Example: `main.c` (as of 2026-10-01)
+## Example: `main.c` (fixed 2026-10-01)
 
-`main.c` mixes both conventions:
+`main.c` used to mix both conventions:
 
 - `int board[WIDTH][HEIGHT]` and `board[randomX][randomY]` in
   `spawnTile` put x first.
 - `printBoard`, `moveLeft(board[i])`, and the Left/Right loops
-  (`i < HEIGHT`) treat the first index as the row.
+  (`i < HEIGHT`) treated the first index as the row.
 
-A 4×4 board hides this. With `#define WIDTH 5`, the board prints 4 wide
-and 5 tall, and `moveLeft` loops over 5 cells of each 4-cell row,
-reading past its end.
+A 4×4 board hid this. With `#define WIDTH 5`, the board would print 4
+wide and 5 tall, and `moveLeft` would loop over 5 cells of each 4-cell
+row, reading past its end.
 
-Proposed fix (not yet applied): one `SIZE` constant replacing `WIDTH`
-and `HEIGHT` — 2048 is square, and `moveUp` already assumes it by
-running the row logic on columns — plus `row`/`col` names in
-`spawnTile`.
+The fix: `spawnTile` now indexes `board[randomY][randomX]` (`cea00e1`),
+and one `SIZE` constant replaces `WIDTH` and `HEIGHT` (`d3b8a43`) — 2048
+is square, and `moveUp` already assumed it by running the row logic on
+columns. Every access now treats the first index as the row.
 
 ## Staying consistent across projects
 
