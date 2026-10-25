@@ -9,8 +9,9 @@ project(
 )
 
 set(AUTHOR_NAME shaun)
-
 set(CMAKE_EXPORT_COMPILE_COMMANDS True)
+set(CMAKE_C_STANDARD 17)
+set(CMAKE_C_STANDARD_REQUIRED True)
 
 add_executable(
   # Name of executable. Using project name.
@@ -18,6 +19,14 @@ add_executable(
 
   # Source of executable
   main.c
+)
+
+target_compile_options(
+  ${PROJECT_NAME}
+  PRIVATE
+    -Wall
+    -Wextra
+    -Wpedantic
 )
 
 target_include_directories(

@@ -11,7 +11,7 @@ enum GameState { WIN, LOSE, EXIT };
 void spawnTile(int board[SIZE][SIZE]);
 void printBoard(int board[SIZE][SIZE], int score);
 enum GameState gameLoop(int board[SIZE][SIZE]);
-int getInput();
+int getInput(void);
 int getNonZeroIndex(int currentIndex, int row[SIZE]);
 void compactLeft(int row[SIZE]);
 int mergeLeft(int row[SIZE]);
@@ -31,7 +31,7 @@ int getRawInput(void);
 
 enum Command { UP, DOWN, LEFT, RIGHT, QUIT };
 
-int main(int argc, char *argv[]) {
+int main(void) {
     srand(time(NULL));
 
     do {
@@ -148,7 +148,7 @@ int getRawInput(void) {
     return input;
 }
 
-int getInput() {
+int getInput(void) {
     int input, discard;
 
     while (true) {
