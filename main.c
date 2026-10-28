@@ -8,7 +8,7 @@
 
 enum GameState { WIN, LOSE, EXIT };
 
-void spawnTile(int board[SIZE][SIZE]);
+bool spawnTile(int board[SIZE][SIZE]);
 void printBoard(int board[SIZE][SIZE], int score);
 enum GameState gameLoop(int board[SIZE][SIZE]);
 int getInput(void);
@@ -58,18 +58,37 @@ bool hasChanged(int oldBoard[SIZE][SIZE], int newBoard[SIZE][SIZE]) {
     return false;
 }
 
-void spawnTile(int board[SIZE][SIZE]) {
-    while (true) {
-        int randomX = rand() % SIZE;
-        int randomY = rand() % SIZE;
-
-        if (board[randomY][randomX] != 0) {
-            continue;
+bool spawnTile(int board[SIZE][SIZE]) {
+    int emptyCount = 0;
+    for (int row = 0; row < SIZE; row++) {
+        for (int col = 0; col < SIZE; col++) {
+            if (board[row][col] == 0) {
+                emptyCount++;
+            }
         }
-
-        board[randomY][randomX] = rand() % 100 < 90 ? 2 : 4;
-        break;
     }
+
+    if (emptyCount == 0) {
+        return false;
+    }
+
+    int emptySeen = 0;
+
+    int randomSelect = rand() % emptyCount;
+
+    for (int row = 0; row < SIZE; row++) {
+        for (int col = 0; col < SIZE; col++) {
+            if (board[row][col] == 0) {
+                if (emptySeen == randomSelect) {
+                    board[row][col] = rand() % 100 < 90 ? 2 : 4;
+                    return true;
+                }
+                emptySeen++;
+            }
+        }
+    }
+
+    return false;
 }
 
 void printBoard(int board[SIZE][SIZE], int score) {
