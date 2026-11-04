@@ -190,18 +190,32 @@ int getInput(void) {
                 ;
         }
 
-        if (input == 'w' || input == 'W') {
-            return UP;
-        } else if (input == 's' || input == 'S') {
-            return DOWN;
-        } else if (input == 'a' || input == 'A') {
-            return LEFT;
-        } else if (input == 'd' || input == 'D') {
-            return RIGHT;
-        } else if (input == 'q' || input == 'Q') {
-            return QUIT;
-        } else {
-            printf("Invalid input\n");
+        switch (input) {
+            case 'w':
+            case 'W':
+            case 'k':
+            case 'K':
+                return UP;
+            case 's':
+            case 'S':
+            case 'j':
+            case 'J':
+                return DOWN;
+            case 'a':
+            case 'A':
+            case 'h':
+            case 'H':
+                return LEFT;
+            case 'd':
+            case 'D':
+            case 'l':
+            case 'L':
+                return RIGHT;
+            case 'q':
+            case 'Q':
+                return QUIT;
+            default:
+                printf("Invalid input\n");
         }
     }
 }
