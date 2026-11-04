@@ -18,7 +18,7 @@ add_executable(
   ${PROJECT_NAME}
 
   # Source of executable
-  main.c
+  src/main.c
 )
 
 target_compile_options(
@@ -28,9 +28,3 @@ target_compile_options(
     -Wextra
     -Wpedantic
 )
-
-target_include_directories(
-  ${PROJECT_NAME}
-  PUBLIC "include"
-)
-
