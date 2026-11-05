@@ -19,6 +19,7 @@ add_executable(
 
   # Source of executable
   src/gameio.c
+  src/board.c
   src/main.c
 )
 
