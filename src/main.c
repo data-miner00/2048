@@ -3,18 +3,13 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+#include "gameio.h"
 
 // make these to get from optional params
 #define SIZE 4
 #define WIN_SCORE 2048
 
 enum GameState { WIN, LOSE, EXIT };
-enum Command { UP, DOWN, LEFT, RIGHT, QUIT };
-
-int getInput(void);
-void clearScreen(void);
-bool askPlayAgain(void);
-int getRawInput(void);
 
 // board
 bool spawnTile(int board[SIZE][SIZE]);
@@ -160,66 +155,6 @@ enum GameState gameLoop(int board[SIZE][SIZE]) {
     }
 }
 
-int getRawInput(void) {
-    int input = getchar(), discard;
-
-    if (input == EOF) {
-        return input;
-    }
-
-    if (input != '\n') {
-        while ((discard = getchar()) != '\n' && discard != EOF)
-            ;
-    }
-
-    return input;
-}
-
-int getInput(void) {
-    int input, discard;
-
-    while (true) {
-        input = getchar();
-
-        if (input == EOF) {
-            return QUIT;
-        }
-
-        if (input != '\n') {
-            while ((discard = getchar()) != '\n' && discard != EOF)
-                ;
-        }
-
-        switch (input) {
-            case 'w':
-            case 'W':
-            case 'k':
-            case 'K':
-                return UP;
-            case 's':
-            case 'S':
-            case 'j':
-            case 'J':
-                return DOWN;
-            case 'a':
-            case 'A':
-            case 'h':
-            case 'H':
-                return LEFT;
-            case 'd':
-            case 'D':
-            case 'l':
-            case 'L':
-                return RIGHT;
-            case 'q':
-            case 'Q':
-                return QUIT;
-            default:
-                printf("Invalid input\n");
-        }
-    }
-}
-
 int getNonZeroIndex(int currentIndex, int row[SIZE]) {
     // Find first non-zero index
     for (int i = currentIndex + 1; i < SIZE; i++) {
@@ -348,31 +283,4 @@ bool canMove(int board[SIZE][SIZE]) {
         }
     }
     return false;
-}
-
-void clearScreen(void) {
-    // ESC[2J = clear screen
-    // ESC[H = move cursor to top left
-    printf("\033[2J\033[H");
-}
-
-bool askPlayAgain(void) {
-    while (true) {
-        printf("Play again? (y/n): ");
-        fflush(stdout); // Prompt has no '\n', so push it out before waiting for input
-
-        int answer = getRawInput();
-
-        if (answer == EOF) {
-            return false;
-        }
-
-        if (answer == 'y' || answer == 'Y') {
-            return true;
-        } else if (answer == 'n' || answer == 'N') {
-            return false;
-        } else {
-            printf("Invalid input\n");
-        }
-    }
 }
