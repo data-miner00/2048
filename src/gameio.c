@@ -31,19 +31,10 @@ bool askPlayAgain(void) {
 
 
 int getInput(void) {
-    int input, discard;
+    int input;
 
     while (true) {
-        input = getchar();
-
-        if (input == EOF) {
-            return QUIT;
-        }
-
-        if (input != '\n') {
-            while ((discard = getchar()) != '\n' && discard != EOF)
-                ;
-        }
+        input = getRawInput();
 
         switch (input) {
             case 'w':
@@ -68,6 +59,7 @@ int getInput(void) {
                 return RIGHT;
             case 'q':
             case 'Q':
+            case EOF:
                 return QUIT;
             default:
                 printf("Invalid input\n");
