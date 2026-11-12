@@ -3,7 +3,6 @@
 #include "gameio.h"
 #include "board.h"
 
-
 int main(void) {
     srand(time(NULL));
 

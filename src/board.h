@@ -30,5 +30,4 @@ bool hasChanged(int oldBoard[SIZE][SIZE], int newBoard[SIZE][SIZE]);
 bool hasWon(int board[SIZE][SIZE]);
 bool canMove(int board[SIZE][SIZE]);
 
-
 #endif // BOARD_H

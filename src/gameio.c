@@ -1,7 +1,6 @@
 #include "gameio.h"
 #include <stdio.h>
 
-
 void clearScreen(void) {
     // ESC[2J = clear screen
     // ESC[H = move cursor to top left
@@ -29,7 +28,6 @@ bool askPlayAgain(void) {
     }
 }
 
-
 int getInput(void) {
     int input;
 
@@ -37,36 +35,35 @@ int getInput(void) {
         input = getRawInput();
 
         switch (input) {
-            case 'w':
-            case 'W':
-            case 'k':
-            case 'K':
-                return UP;
-            case 's':
-            case 'S':
-            case 'j':
-            case 'J':
-                return DOWN;
-            case 'a':
-            case 'A':
-            case 'h':
-            case 'H':
-                return LEFT;
-            case 'd':
-            case 'D':
-            case 'l':
-            case 'L':
-                return RIGHT;
-            case 'q':
-            case 'Q':
-            case EOF:
-                return QUIT;
-            default:
-                printf("Invalid input\n");
+        case 'w':
+        case 'W':
+        case 'k':
+        case 'K':
+            return UP;
+        case 's':
+        case 'S':
+        case 'j':
+        case 'J':
+            return DOWN;
+        case 'a':
+        case 'A':
+        case 'h':
+        case 'H':
+            return LEFT;
+        case 'd':
+        case 'D':
+        case 'l':
+        case 'L':
+            return RIGHT;
+        case 'q':
+        case 'Q':
+        case EOF:
+            return QUIT;
+        default:
+            printf("Invalid input\n");
         }
     }
 }
-
 
 int getRawInput(void) {
     int input = getchar(), discard;
