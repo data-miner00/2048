@@ -4,6 +4,8 @@
 
 enum Command { UP, DOWN, LEFT, RIGHT, QUIT };
 
+void enableRawMode(void);
+void disableRawMode(void);
 int getInput(void);
 void clearScreen(void);
 bool askPlayAgain(void);

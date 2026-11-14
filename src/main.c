@@ -5,6 +5,7 @@
 
 int main(void) {
     srand(time(NULL));
+    enableRawMode();
 
     do {
         int board[SIZE][SIZE] = {0};
@@ -16,5 +17,6 @@ int main(void) {
         }
     } while (askPlayAgain());
 
+    disableRawMode();
     return 0;
 }

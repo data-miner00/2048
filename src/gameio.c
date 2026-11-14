@@ -1,5 +1,45 @@
 #include "gameio.h"
 #include <stdio.h>
+#include <termios.h>
+#include <unistd.h>
+
+static struct termios originalSettings;
+static bool rawModeEnabled = false;
+
+void enableRawMode(void) {
+    // when pipe mode
+    if (isatty(STDIN_FILENO) == 0) {
+        return;
+    }
+
+    struct termios newSettings;
+
+    if (tcgetattr(STDIN_FILENO, &originalSettings) == -1) {
+        perror("tcgetattr");
+        return;
+    }
+    newSettings = originalSettings;
+
+    // Disable canonical mode and echo
+    newSettings.c_lflag &= ~(ICANON | ECHO);
+
+    // Set minimum number of characters for non-canonical read to 1
+    newSettings.c_cc[VMIN] = 1;
+    // Set timeout for non-canonical read to 0 (no timeout)
+    newSettings.c_cc[VTIME] = 0;
+
+    // Don't use TCSANOW
+    tcsetattr(STDIN_FILENO, TCSAFLUSH, &newSettings);
+    rawModeEnabled = true;
+}
+
+void disableRawMode(void) {
+    if (!rawModeEnabled) {
+        return;
+    }
+
+    tcsetattr(STDIN_FILENO, TCSAFLUSH, &originalSettings);
+}
 
 void clearScreen(void) {
     // ESC[2J = clear screen
