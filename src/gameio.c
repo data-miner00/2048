@@ -99,23 +99,17 @@ int getInput(void) {
         case 'Q':
         case EOF:
             return QUIT;
+        case '\n':
+            continue;
         default:
             printf("Invalid input\n");
+            break;
         }
     }
 }
 
 int getRawInput(void) {
-    int input = getchar(), discard;
-
-    if (input == EOF) {
-        return input;
-    }
-
-    if (input != '\n') {
-        while ((discard = getchar()) != '\n' && discard != EOF)
-            ;
-    }
+    int input = getchar();
 
     return input;
 }
