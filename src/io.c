@@ -48,22 +48,25 @@ void clearScreen(void) {
 }
 
 bool askPlayAgain(void) {
+    int input;
+
     while (true) {
         printf("Play again? (y/n): ");
         fflush(stdout); // Prompt has no '\n', so push it out before waiting for input
+        input = getRawInput();
 
-        int answer = getRawInput();
-
-        if (answer == EOF) {
-            return false;
-        }
-
-        if (answer == 'y' || answer == 'Y') {
+        switch (input) {
+        case 'y':
+        case 'Y':
             return true;
-        } else if (answer == 'n' || answer == 'N') {
+        case 'n':
+        case 'N':
+        case EOF:
             return false;
-        } else {
+        case '\n':
+        default:
             printf("Invalid input\n");
+            break;
         }
     }
 }
