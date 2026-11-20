@@ -18,7 +18,7 @@ add_executable(
   ${PROJECT_NAME}
 
   # Source of executable
-  src/gameio.c
+  src/io.c
   src/board.c
   src/main.c
 )

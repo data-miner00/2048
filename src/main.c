@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <time.h>
-#include "gameio.h"
+#include "io.h"
 #include "board.h"
 
 int main(void) {

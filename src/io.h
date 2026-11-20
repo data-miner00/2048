@@ -1,5 +1,5 @@
-#ifndef GAMEIO_H
-#define GAMEIO_H
+#ifndef IO_H
+#define IO_H
 #include <stdbool.h>
 
 enum Command { UP, DOWN, LEFT, RIGHT, QUIT };
@@ -11,4 +11,4 @@ void clearScreen(void);
 bool askPlayAgain(void);
 int getRawInput(void);
 
-#endif // GAMEIO_H
+#endif // IO_H

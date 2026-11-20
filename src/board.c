@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "board.h"
-#include "gameio.h"
+#include "io.h"
 
 bool hasChanged(int oldBoard[SIZE][SIZE], int newBoard[SIZE][SIZE]) {
     for (int i = 0; i < SIZE; i++) {
