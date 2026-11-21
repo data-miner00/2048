@@ -2,11 +2,14 @@
 #include <stdio.h>
 #include <termios.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 static struct termios originalSettings;
 static bool rawModeEnabled = false;
 
 void enableRawMode(void) {
+    atexit(disableRawMode);
+
     // when pipe mode
     if (isatty(STDIN_FILENO) == 0) {
         return;

@@ -17,6 +17,5 @@ int main(void) {
         }
     } while (askPlayAgain());
 
-    disableRawMode();
     return 0;
 }
