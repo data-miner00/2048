@@ -9,6 +9,8 @@ void disableRawMode(void);
 int getInput(void);
 void clearScreen(void);
 bool askPlayAgain(void);
+
+enum ArrowKeys { KEY_UP = 165, KEY_DOWN, KEY_LEFT, KEY_RIGHT };
 int getRawInput(void);
 
 #endif // IO_H

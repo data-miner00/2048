@@ -85,21 +85,25 @@ int getInput(void) {
         case 'W':
         case 'k':
         case 'K':
+        case KEY_UP:
             return UP;
         case 's':
         case 'S':
         case 'j':
         case 'J':
+        case KEY_DOWN:
             return DOWN;
         case 'a':
         case 'A':
         case 'h':
         case 'H':
+        case KEY_LEFT:
             return LEFT;
         case 'd':
         case 'D':
         case 'l':
         case 'L':
+        case KEY_RIGHT:
             return RIGHT;
         case 'q':
         case 'Q':
@@ -116,6 +120,25 @@ int getInput(void) {
 
 int getRawInput(void) {
     int input = getchar();
+
+    if (input == 27) { // Escape character
+        // Check for arrow keys
+        if (getchar() == '[') {
+            input = getchar();
+            switch (input) {
+            case 'A':
+                return KEY_UP;
+            case 'B':
+                return KEY_DOWN;
+            case 'C':
+                return KEY_RIGHT;
+            case 'D':
+                return KEY_LEFT;
+            default:
+                return input; // Return the character after escape sequence
+            }
+        }
+    }
 
     return input;
 }
