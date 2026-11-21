@@ -10,7 +10,7 @@ int getInput(void);
 void clearScreen(void);
 bool askPlayAgain(void);
 
-enum ArrowKeys { KEY_UP = 256, KEY_DOWN, KEY_LEFT, KEY_RIGHT };
+enum ArrowKeys { KEY_UP = 256, KEY_DOWN, KEY_LEFT, KEY_RIGHT, KEY_UNKNOWN };
 int getRawInput(void);
 
 #endif // IO_H

@@ -134,8 +134,10 @@ int getRawInput(void) {
                 return KEY_RIGHT;
             case 'D':
                 return KEY_LEFT;
+            case EOF:
+                return EOF;
             default:
-                return input; // Return the character after escape sequence
+                return KEY_UNKNOWN;
             }
         }
     }
