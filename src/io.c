@@ -123,7 +123,8 @@ int getRawInput(void) {
 
     if (input == 27) { // Escape character
         // Check for arrow keys
-        if (getchar() == '[') {
+        int press = getchar();
+        if (press == '[' || press == 'O') {
             input = getchar();
             switch (input) {
             case 'A':
