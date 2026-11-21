@@ -27,32 +27,25 @@ Shaun has explicitly chosen a "write it himself" learning style:
 
 ## Build & run
 
-```sh
-mkdir -p build && cd build
-cmake ..
-cmake --build .
-./2048
-```
-
-Format before committing:
-```sh
-clang-format -i main.c
-```
+The `Makefile` wraps CMake: `make run` builds and starts the game. Before
+committing, run `make format` (applies `.clang-format`; `make format-check`
+verifies).
 
 ## Project layout
 
-- `main.c` — game entry point and (currently) all game logic. As the game
-  grows, logic may get split into additional `.c`/`.h` files under
-  `include/` — discuss this with Shaun before restructuring.
-- `include/` — public headers.
-- `CMakeLists.txt` — build config, C project, single executable target `2048`.
-- `build/` — out-of-source build directory (gitignored).
+- `src/main.c`: entry point. Enables raw mode, then runs the game and
+  replay loop.
+- `src/board.c` / `board.h`: board logic and the game loop (`gameLoop`).
+- `src/io.c` / `io.h`: terminal I/O, meaning raw mode, reading and
+  decoding keys, clearing the screen, and the play-again prompt.
+- `build/`: out-of-source build directory (gitignored).
+
+Discuss with Shaun before restructuring files.
 
 ## Conventions
 
 - Language: C. `CMakeLists.txt` pins the standard (C17) and the warning
   flags (`-Wall -Wextra -Wpedantic`).
-- 4-space indentation (matches existing `main.c`).
 - Board is a fixed 4x4 grid of `int`, indexed `board[row][col]` with row
   0 at the top (0 = empty cell, otherwise the tile value: 2, 4, 8, ...
   2048).
@@ -77,11 +70,12 @@ Rough milestone order — don't skip ahead:
 8. Track and display score.
 9. Polish: clear screen between renders, game loop, replay/quit prompt.
 
-Current status: all nine steps done. No next milestone picked yet — ask
-Shaun what he wants to work on next.
+Current status: all nine steps done, plus one-key input in raw terminal
+mode with arrow keys. No next milestone picked yet. Ask Shaun what he
+wants to work on next.
 
-- Before changing code that reads stdin, read
-  `docs/stdin-input-pitfalls.md`: the line-flush, EOF and blank-line bugs
-  already hit.
+- Before changing code that reads stdin or sets terminal modes, read
+  `docs/stdin-input-pitfalls.md`: the line-mode, EOF, raw-mode and
+  arrow-key bugs already hit.
 - Before writing `board` indexing code, read
   `docs/2d-array-mental-model.md`: why `[row][col]`, and the (x, y) trap.
